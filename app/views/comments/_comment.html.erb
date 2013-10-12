@@ -1,15 +1,22 @@
-<p>
-  <strong>Commenter:</strong>
-  <%= comment.commenter %>
-</p>
- 
-<p>
-  <strong>Comment:</strong>
-  <%= comment.body %>
-</p>
 
-<p>
+<table class="table">
+	<tr>
+	  <td> <span class="label label-default">Commentor :</span>
+	   <span id="post_title" class="mercury-region" data-type="editable"><%= comment.commenter %></span>
+	</td>
+	</tr>
+	<tr>
+	<td>
+	   <span class="label label-success">Comment :</span>
+	   <span id="post_text" class="mercury-region" data-type="editable"><%= comment.body %></span>
+	</td>
+	</tr>
+	</table>
+
+<div class="form-actions">
   <%= link_to 'Destroy Comment', [comment.post, comment],
                method: :delete,
-               data: { confirm: 'Are you sure?' } %>
-</p>
+               data: { confirm: 'Are you sure?' }, :class => 'btn btn-primary' %>
+</div>
+
+

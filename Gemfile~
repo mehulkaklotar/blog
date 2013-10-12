@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'sass-rails', '4.0.0'
+gem 'rails' 
+gem 'therubyracer'
+gem 'sass-rails', '~> 3.1.4'
 
 # Use sqlite3 as the database for Active Record
 group :development do
@@ -9,13 +11,13 @@ group :development do
 end
 
 # Use SCSS for stylesheets
-gem 'sass-rails',   '4.0.0'
+gem 'sass-rails',   '~> 3.1.4'
 
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '2.1.1'
+gem 'uglifier', '>= 1.0.3'
 
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '4.0.0'
+gem 'coffee-rails', '~> 3.1.1'
 
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
@@ -38,7 +40,7 @@ group :production do
   gem 'pg', '0.15.1'
   gem 'rails_12factor', '0.0.2'
 end
-
+gem 'mercury-rails', git: 'https://github.com/jejacks0n/mercury.git', ref: 'a2b16bcdc9'
 gem "actionmailer"
 gem 'activerecord', :require => "active_record"
 # Use ActiveModel has_secure_password

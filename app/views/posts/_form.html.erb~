@@ -1,26 +1,34 @@
-<%= form_for @post do |f| %>
+<%= form_for @post, :html => { :class => 'form-horizontal' } do |f| %>
+<fieldset>
+
   <% if @post.errors.any? %>
   <div id="errorExplanation">
     <h2><%= pluralize(@post.errors.count, "error") %> prohibited
       this post from being saved:</h2>
     <ul>
     <% @post.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
+      <li style = "color : red;"><%= msg %></li>
     <% end %>
     </ul>
   </div>
   <% end %>
-  <p>
-    <%= f.label :title %><br>
-    <%= f.text_field :title %>
-  </p>
+
+  <div class="control-group">
+    <%= f.label :title, :class => 'control-label' %>
+    <div class="controls">
+    <%= f.text_field :title, :class => 'text_field' %>
+    </div>
+  </div>
  
-  <p>
-    <%= f.label :text %><br>
-    <%= f.text_area :text %>
-  </p>
- 
-  <p>
-    <%= f.submit %>
-  </p>
+  <div class="control-group">
+    <%= f.label :text, :class => 'control-label' %>
+    <div class="controls">
+    <%= f.text_area :text, :class => 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit "Post", :class => 'btn btn-primary' %>
+  </div>
+</fieldset>
 <% end %>
