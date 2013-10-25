@@ -1,0 +1,22 @@
+
+<table class="table">
+	<tr>
+	  <td> <span class="label label-default">Commentor :</span>
+	   <span><%= comment.commenter %></span>
+	</td>
+	</tr>
+	<tr>
+	<td>
+	   <span class="label label-success">Comment :</span>
+	   <span><%= comment.body %></span>
+	</td>
+	</tr>
+	</table>
+
+<div class="form-actions">
+  <%= link_to 'Destroy Comment', [comment.post, comment],
+               method: :delete,
+               data: { confirm: 'Are you sure?' }, :class => 'btn btn-primary' %>
+</div>
+
+
