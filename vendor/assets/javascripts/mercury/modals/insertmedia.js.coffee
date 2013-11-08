@@ -1,9 +1,9 @@
 @Mercury.modalHandlers.insertMedia = ->
   # make the inputs work with the radio buttons, and options
-  @element.find('label input').on 'click', ->
+  @element.find('label input').click (event) ->
     jQuery(@).closest('label').next('.selectable').focus()
 
-  @element.find('.selectable').on 'focus', (event) =>
+  @element.find('.selectable').focus (event) =>
     element = jQuery(event.target)
     element.prev('label').find('input[type=radio]').prop("checked", true)
 
@@ -19,7 +19,6 @@
     if selection.is && image = selection.is('img')
       @element.find('#media_image_url').val(image.attr('src'))
       @element.find('#media_image_alignment').val(image.attr('align'))
-      setTimeout 300, => @element.find('#media_image_url').focus()
 
     # if we're editing an iframe (assume it's a video for now)
     if selection.is && iframe = selection.is('iframe')
@@ -29,18 +28,18 @@
         @element.find('#media_youtube_url').val("http://youtu.be/#{src.match(/\/embed\/(\w+)/)[1]}")
         @element.find('#media_youtube_width').val(iframe.width())
         @element.find('#media_youtube_height').val(iframe.height())
-        setTimeout 300, => @element.find('#media_youtube_url').focus()
+        @element.find('#media_youtube_url').focus()
       else if src.indexOf('http://player.vimeo.com') > -1
         # it's a vimeo video
         @element.find('#media_vimeo_url').val("http://vimeo.com/#{src.match(/\/video\/(\w+)/)[1]}")
         @element.find('#media_vimeo_width').val(iframe.width())
         @element.find('#media_vimeo_height').val(iframe.height())
-        setTimeout 300, => @element.find('#media_vimeo_url').focus()
-
+        @element.find('#media_vimeo_url').focus()
 
   # build the image or youtube embed on form submission
-  @element.find('form').on 'submit', (event) =>
+  @element.find('form').submit (event) =>
     event.preventDefault()
+
     type = @element.find('input[name=media_type]:checked').val()
 
     switch type
@@ -52,7 +51,7 @@
       when 'youtube_url'
         url = @element.find('#media_youtube_url').val()
         unless /^http:\/\/youtu.be\//.test(url)
-          Mercury.notify('Error: The provided youtube share url was invalid.')
+          alert('Error: The provided youtube share url was invalid.')
           return
         code = url.replace('http://youtu.be/', '')
         value = jQuery('<iframe>', {
@@ -67,14 +66,14 @@
       when 'vimeo_url'
         url = @element.find('#media_vimeo_url').val()
         unless /^http:\/\/vimeo.com\//.test(url)
-          Mercury.notify('Error: The provided vimeo url was invalid.')
+          alert('Error: The provided vimeo url was invalid.')
           return
         code = url.replace('http://vimeo.com/', '')
         value = jQuery('<iframe>', {
           width: @element.find('#media_vimeo_width').val() || 400,
           height: @element.find('#media_vimeo_height').val() || 225,
           src: "http://player.vimeo.com/video/#{code}?title=1&byline=1&portrait=0&color=ffffff",
-          frameborder: 0
+          frameborder: 0,
         })
         Mercury.trigger('action', {action: 'insertHTML', value: value})
 

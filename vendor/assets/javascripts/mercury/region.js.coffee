@@ -6,7 +6,7 @@ class @Mercury.Region
     Mercury.log("building #{@type}", @element, @options)
 
     @document = @window.document
-    @name = @element.attr(Mercury.config.regions.identifier)
+    @name = @element.attr('id')
     @history = new Mercury.HistoryBuffer()
     @build()
     @bindEvents()
@@ -21,24 +21,28 @@ class @Mercury.Region
 
 
   bindEvents: ->
-    Mercury.on 'mode', (event, options) => @togglePreview() if options.mode == 'preview'
+    Mercury.bind 'mode', (event, options) =>
+      @togglePreview() if options.mode == 'preview'
 
-    Mercury.on 'focus:frame', =>
-      return if @previewing || Mercury.region != @
+    Mercury.bind 'focus:frame', =>
+      return if @previewing
+      return unless Mercury.region == @
       @focus()
 
-    Mercury.on 'action', (event, options) =>
-      return if @previewing || Mercury.region != @
+    Mercury.bind 'action', (event, options) =>
+      return if @previewing
+      return unless Mercury.region == @
       @execCommand(options.action, options) if options.action
 
-    @element.on 'mousemove', (event) =>
-      return if @previewing || Mercury.region != @
+    @element.mousemove (event) =>
+      return if @previewing
+      return unless Mercury.region == @
       snippet = jQuery(event.target).closest('.mercury-snippet')
       if snippet.length
         @snippet = snippet
         Mercury.trigger('show:toolbar', {type: 'snippet', snippet: @snippet})
 
-    @element.on 'mouseout', =>
+    @element.mouseout =>
       return if @previewing
       Mercury.trigger('hide:toolbar', {type: 'snippet', immediately: false})
 
@@ -63,11 +67,11 @@ class @Mercury.Region
   togglePreview: ->
     if @previewing
       @previewing = false
-      @element.addClass(Mercury.config.regions.className).removeClass("#{Mercury.config.regions.className}-preview")
+      @element.addClass(Mercury.config.regionClass).removeClass("#{Mercury.config.regionClass}-preview")
       @focus() if Mercury.region == @
     else
       @previewing = true
-      @element.addClass("#{Mercury.config.regions.className}-preview").removeClass(Mercury.config.regions.className)
+      @element.addClass("#{Mercury.config.regionClass}-preview").removeClass(Mercury.config.regionClass)
       Mercury.trigger('region:blurred', {region: @})
 
 
@@ -76,7 +80,7 @@ class @Mercury.Region
     @pushHistory() unless action == 'redo'
 
     Mercury.log('execCommand', action, options.value)
-    Mercury.changes = true unless options.already_handled
+    Mercury.changes = true
 
 
   pushHistory: ->
@@ -92,16 +96,9 @@ class @Mercury.Region
     return snippets
 
 
-  dataAttributes: ->
-    data = {}
-    data[attr] = @element.attr('data-' + attr) for attr in Mercury.config.regions.dataAttributes
-    return data
-
-
   serialize: ->
     return {
       type: @type
-      data: @dataAttributes()
       value: @content(null, true)
       snippets: @snippets()
     }

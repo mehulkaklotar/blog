@@ -48,27 +48,25 @@ class @Mercury.Toolbar
       when 'string' # separator
         jQuery('<hr>', {class: "mercury-#{if options == '-' then 'line-separator' else 'separator'}"})
 
-      else throw Mercury.I18n('Unknown button structure -- please provide an array, object, or string for "%s".', name)
+      else throw "Unknown button structure -- please provide an array, object, or string for #{name}."
 
 
   bindEvents: ->
-    Mercury.on 'region:focused', (event, options) =>
+    Mercury.bind 'region:focused', (event, options) =>
       for toolbar in @element.find(".mercury-toolbar")
         toolbar = jQuery(toolbar)
         if regions = toolbar.data('regions')
           toolbar.removeClass('disabled') if regions.split(',').indexOf(options.region.type) > -1
 
-    Mercury.on 'region:blurred', (event, options) =>
+    Mercury.bind 'region:blurred', (event, options) =>
       for toolbar in @element.find(".mercury-toolbar")
         toolbar = jQuery(toolbar)
         if regions = toolbar.data('regions')
           toolbar.addClass('disabled') if regions.split(',').indexOf(options.region.type) > -1
 
-    @element.on 'click', ->
-      Mercury.trigger('hide:dialogs')
 
-    @element.on 'mousedown', (event) ->
-      event.preventDefault()
+    @element.click -> Mercury.trigger('hide:dialogs')
+    @element.mousedown (event) -> event.preventDefault()
 
 
   height: ->

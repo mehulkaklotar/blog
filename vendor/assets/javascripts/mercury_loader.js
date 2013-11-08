@@ -99,7 +99,6 @@ if (!window.mercuryPackages) window.mercuryPackages = {
         if (!match || !match[1]) continue;
 
         match[1].replace(/([^&=]*)=([^&=]*)/g, function (m, attr, value) {
-          if (['true', 'false'].indexOf(value) >= 0) value = JSON.parse(value);
           options[attr] = value;
         });
       }
@@ -131,7 +130,6 @@ if (!window.mercuryPackages) window.mercuryPackages = {
           var script = document.createElement('script');
           script.src = options.src + '/' + src;
           script.type = 'text/javascript';
-          script.charset = 'utf-8';
           head.appendChild(script);
           script.onload = function() {
             loaded += 1;

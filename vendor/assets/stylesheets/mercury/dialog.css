@@ -24,6 +24,7 @@
 .mercury-dialog.loading,
 .mercury-select.loading,
 .mercury-palette.loading {
+  background-image: url(/assets/mercury/loading-light.gif);
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -54,6 +55,7 @@
   max-width: 500px;
 }
 .mercury-panel.loading {
+  background-image: url(/assets/mercury/loading-dark.gif);
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -77,16 +79,6 @@
   height: 15px;
   cursor: move;
   text-shadow: 1px 1px 2px rgba(0,0,0, .9);
-}
-.mercury-panel h1 a.mercury-panel-close {
-  position: absolute;
-  right: -5px;
-  top: -4px;
-  width: 42px;
-  height: 42px;
-  cursor: default;
-  background-repeat: no-repeat;
-  background-position: center;
 }
 .mercury-panel h4,
 .mercury-panel h5,
@@ -177,8 +169,7 @@
   -webkit-box-sizing: border-box;
   width: 100%;
   padding-left: 20px;
-  background-color: #FFF;
-  background-repeat: no-repeat;
+  background: #FFF url(/assets/mercury/search-icon.png) no-repeat 4px center;
 }
 .mercury-snippet-panel ul {
   font-size: .9em;

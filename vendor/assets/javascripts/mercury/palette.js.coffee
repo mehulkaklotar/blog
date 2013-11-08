@@ -10,7 +10,7 @@ class @Mercury.Palette extends Mercury.Dialog
 
 
   bindEvents: ->
-    Mercury.on 'hide:dialogs', (event, dialog) => @hide() unless dialog == @
+    Mercury.bind 'hide:dialogs', (event, dialog) => @hide() unless dialog == @
     super
 
 

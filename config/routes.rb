@@ -1,12 +1,11 @@
 Blog::Application.routes.draw do
+
   Mercury::Engine.routes
 
-resources :posts do
+  resources :posts do
   member { post :mercury_update }
-  resources :comments 
+  resources :comments
 end
-
-
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

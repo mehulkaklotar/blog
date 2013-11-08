@@ -1,8 +1,4 @@
 class @Mercury.Regions.Editable extends Mercury.Region
-  # No IE support yet because it doesn't follow the W3C standards for HTML5 contentEditable (aka designMode).
-  @supported: document.designMode && !jQuery.browser.konqueror && !jQuery.browser.msie
-  @supportedText: "Chrome 10+, Firefox 4+, Safari 5+"
-
   type = 'editable'
 
   constructor: (@element, @window, @options = {}) ->
@@ -45,9 +41,10 @@ class @Mercury.Regions.Editable extends Mercury.Region
   bindEvents: ->
     super
 
-    Mercury.on 'region:update', =>
-      return if @previewing || Mercury.region != @
-      setTimeout(1, => @selection().forceSelection(@element.get(0)))
+    Mercury.bind 'region:update', =>
+      return if @previewing
+      return unless Mercury.region == @
+      setTimeout((=> @selection().forceSelection(@element.get(0))), 1)
       currentElement = @currentElement()
       if currentElement.length
         # setup the table editor if we're inside a table
@@ -60,25 +57,25 @@ class @Mercury.Regions.Editable extends Mercury.Region
         else
           Mercury.tooltip.hide()
 
-    @element.on 'dragenter', (event) =>
+    @element.bind 'dragenter', (event) =>
       return if @previewing
       event.preventDefault() unless Mercury.snippet
       event.originalEvent.dataTransfer.dropEffect = 'copy'
 
-    @element.on 'dragover', (event) =>
+    @element.bind 'dragover', (event) =>
       return if @previewing
       event.preventDefault() unless Mercury.snippet
       event.originalEvent.dataTransfer.dropEffect = 'copy'
       if jQuery.browser.webkit
         clearTimeout(@dropTimeout)
-        @dropTimeout = setTimeout(10, => @element.trigger('possible:drop'))
+        @dropTimeout = setTimeout((=> @element.trigger('possible:drop')), 10)
 
-    @element.on 'drop', (event) =>
+    @element.bind 'drop', (event) =>
       return if @previewing
 
       # handle dropping snippets
       clearTimeout(@dropTimeout)
-      @dropTimeout = setTimeout(1, => @element.trigger('possible:drop'))
+      @dropTimeout = setTimeout((=> @element.trigger('possible:drop')), 1)
 
       # handle any files that were dropped
       return unless event.originalEvent.dataTransfer.files.length
@@ -91,7 +88,7 @@ class @Mercury.Regions.Editable extends Mercury.Region
     # isn't handled (eg, putting the image where it was dropped,) so to allow the browser to do it's thing, and also do
     # our thing we have this little hack.  *sigh*
     # read: http://www.quirksmode.org/blog/archives/2009/09/the_html5_drag.html
-    @element.on 'possible:drop', =>
+    @element.bind 'possible:drop', =>
       return if @previewing
       if snippet = @element.find('img[data-snippet]').get(0)
         @focus()
@@ -100,11 +97,11 @@ class @Mercury.Regions.Editable extends Mercury.Region
 
     # custom paste handling: we have to do some hackery to get the pasted content since it's not exposed normally
     # through a clipboard in firefox (heaven forbid), and to keep the behavior across all browsers, we manually detect
-    # what was pasted by focusing a different (hidden) region, letting it paste there, making our adjustments, and then
-    # inserting the content where it was intended.  This is possible, so it doesn't make sense why it wouldn't be
-    # exposed in a sensible way.  *sigh*
-    @element.on 'paste', (event) =>
-      return if @previewing || Mercury.region != @
+    # what was pasted by running a quick diff, removing it by calling undo, making our adjustments, and then putting the
+    # content back.  This is possible, so it doesn't make sense why it wouldn't be exposed in a sensible way.  *sigh*
+    @element.bind 'paste', (event) =>
+      return if @previewing
+      return unless Mercury.region == @
       if @specialContainer
         event.preventDefault()
         return
@@ -112,33 +109,33 @@ class @Mercury.Regions.Editable extends Mercury.Region
       Mercury.changes = true
       @handlePaste(event.originalEvent)
 
-    @element.on 'focus', =>
+    @element.focus =>
       return if @previewing
       Mercury.region = @
-      setTimeout(1, => @selection().forceSelection(@element.get(0)))
+      setTimeout((=> @selection().forceSelection(@element.get(0))), 1)
       Mercury.trigger('region:focused', {region: @})
 
-    @element.on 'blur', =>
+    @element.blur =>
       return if @previewing
       Mercury.trigger('region:blurred', {region: @})
       Mercury.tooltip.hide()
 
-    @element.on 'click', (event) =>
-      jQuery(event.target).closest('a').attr('target', '_parent') if @previewing
+    @element.click (event) =>
+      jQuery(event.target).closest('a').attr('target', '_top') if @previewing
 
-    @element.on 'dblclick', (event) =>
+    @element.dblclick (event) =>
       return if @previewing
       image = jQuery(event.target).closest('img', @element)
       if image.length
         @selection().selectNode(image.get(0), true)
         Mercury.trigger('button', {action: 'insertMedia'})
 
-    @element.on 'mouseup', =>
+    @element.mouseup =>
       return if @previewing
       @pushHistory()
       Mercury.trigger('region:update', {region: @})
 
-    @element.on 'keydown', (event) =>
+    @element.keydown (event) =>
       return if @previewing
       switch event.keyCode
         when 90 # undo / redo
@@ -186,7 +183,7 @@ class @Mercury.Regions.Editable extends Mercury.Region
 
       @pushHistory(event.keyCode)
 
-    @element.on 'keyup', =>
+    @element.keyup =>
       return if @previewing
       Mercury.trigger('region:update', {region: @})
       Mercury.changes = true
@@ -194,13 +191,11 @@ class @Mercury.Regions.Editable extends Mercury.Region
 
   focus: ->
     if Mercury.region != @
-      setTimeout(10, => @element.focus())
+      @element.focus()
       try
         @selection().selection.collapseToStart()
       catch e
         # intentially do nothing
-    else
-      setTimeout(10, => @element.focus())
 
     Mercury.trigger('region:focused', {region: @})
     Mercury.trigger('region:update', {region: @})
@@ -286,11 +281,8 @@ class @Mercury.Regions.Editable extends Mercury.Region
         @document.execCommand(action, false, options.value)
       catch error
         # mozilla: indenting when there's no br tag handles strangely
-        # mozilla: trying to justify the first line of any contentEditable fails
+        # todo: mozilla: trying to justify the first line of any contentEditable fails
         @element.prev().remove() if action == 'indent' && @element.prev() != sibling
-
-    # handle any broken images by replacing the source with an alert image
-    @element.find('img').one 'error', -> jQuery(@).attr({src: '/assets/mercury/missing-image.png', title: 'Image not found'})
 
 
   pushHistory: (keyCode) ->
@@ -308,7 +300,7 @@ class @Mercury.Regions.Editable extends Mercury.Region
       @history.push(@content(null, false, true))
     else if keyCode
       # set a timeout for pushing to the history
-      @historyTimeout = setTimeout(waitTime * 1000, => @history.push(@content(null, false, true)))
+      @historyTimeout = setTimeout((=> @history.push(@content(null, false, true))), waitTime * 1000)
     else
       # push to the history immediately
       @history.push(@content(null, false, true))
@@ -364,7 +356,7 @@ class @Mercury.Regions.Editable extends Mercury.Region
 
   sanitize: (sanitizer) ->
     # always remove nested regions
-    sanitizer.find(".#{Mercury.config.regions.className}").remove()
+    sanitizer.find(".#{Mercury.config.regionClass}").remove()
 
     if Mercury.config.pasting.sanitize
       switch Mercury.config.pasting.sanitize
@@ -509,14 +501,14 @@ class Mercury.Regions.Editable.Selection
 
     if @range
       if @commonAncestor(true).closest('.mercury-snippet').length
-        lastChild = @context.createTextNode('\00')
+        lastChild = @context.createTextNode('\x00')
         element.appendChild(lastChild)
     else
       if element.lastChild && element.lastChild.nodeType == 3 && element.lastChild.textContent.replace(/^[\s+|\n+]|[\s+|\n+]$/, '') == ''
         lastChild = element.lastChild
-        element.lastChild.textContent = '\00'
+        element.lastChild.textContent = '\x00'
       else
-        lastChild = @context.createTextNode('\00')
+        lastChild = @context.createTextNode('\x00')
         element.appendChild(lastChild)
 
     if lastChild

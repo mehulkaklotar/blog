@@ -1,4 +1,4 @@
 @Mercury.modalHandlers.insertCharacter = ->
-  @element.find('.character').on 'click', (event) =>
-    Mercury.trigger('action', {action: 'insertHTML', value: "&#{jQuery(event.target).attr('data-entity')};"})
-    @hide()
+  @element.find('.character').click ->
+    Mercury.trigger('action', {action: 'insertHTML', value: "&#{jQuery(@).attr('data-entity')};"})
+    Mercury.modal.hide()

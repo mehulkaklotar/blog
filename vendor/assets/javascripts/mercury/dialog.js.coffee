@@ -47,8 +47,7 @@ class @Mercury.Dialog
   # **Note:** By stopping the mousedown event we're limiting what's possible in dialogs, but this is needed to keep
   # focus from being taken away from the active region when different things are clicked on in dialogs.
   bindEvents: ->
-    @element.on 'mousedown', (event) ->
-      event.stopPropagation()
+    @element.mousedown (event) -> event.stopPropagation()
 
 
   # ## #preload
@@ -94,7 +93,7 @@ class @Mercury.Dialog
 
   # ## #position
   #
-  # Interface method.  Implementations are expected to position the dialog themselves.
+  # Interface method.  Implemenations are expected to position the dialog themselves.
   #
   # @keepVisible _boolean_ specifies if the element should stay visible if it's already visible.
   position: (keepVisible) ->
@@ -128,8 +127,8 @@ class @Mercury.Dialog
     if Mercury.preloadedViews[@url]
       # If there's a preloadedView defined for the url being requested, load that one.
       @loadContent(Mercury.preloadedViews[@url])
-      # And call the dialog handler if there's one.  We've broken the handlers out into separate files so they can be
-      # tested more easily, but you can define your own by putting them in dialogHandlers.
+      # And call the dialog handler if there's one.  We've broken the handlers out into seperate files so they can be
+      # tested more easily, but you can define your own by putting them in dialogHanders.
       Mercury.dialogHandlers[@name].call(@) if Mercury.dialogHandlers[@name]
       callback() if callback
     else
@@ -143,7 +142,7 @@ class @Mercury.Dialog
           # If the Ajax fails, we hide the dialog and alert the user about the error.
           @hide()
           @button.removeClass('pressed') if @button
-          Mercury.notify('Mercury was unable to load %s for the "%s" dialog.', @url, @name)
+          alert("Mercury was unable to load #{@url} for the #{@name} dialog.")
       }
 
 
@@ -156,4 +155,3 @@ class @Mercury.Dialog
     @loaded = true
     @element.removeClass('loading')
     @element.html(data)
-    @element.localize(Mercury.locale()) if Mercury.config.localization.enabled

@@ -2,10 +2,10 @@
   Mercury.tooltip.show(forElement, content, options)
   return Mercury.tooltip
 
-jQuery.extend Mercury.tooltip,
+jQuery.extend Mercury.tooltip, {
 
   show: (@forElement, @content, @options = {}) ->
-    @document = @forElement.get(0).ownerDocument
+    @document = jQuery(@forElement.get(0).ownerDocument)
     @initialize()
     if @visible then @update() else @appear()
 
@@ -23,19 +23,14 @@ jQuery.extend Mercury.tooltip,
 
 
   bindEvents: ->
-    Mercury.on 'resize', => @position() if @visible
-
-    @element.on 'mousedown', (event) ->
+    Mercury.bind 'resize', => @position() if @visible
+    @document.scroll => @position() if @visible
+    for parent in @forElement.parentsUntil(jQuery('body', @document))
+      if parent.scrollHeight > parent.clientHeight
+        jQuery(parent).scroll => @position() if @visible
+    @element.mousedown (event) ->
       event.preventDefault()
       event.stopPropagation()
-
-    for parent in @forElement.parentsUntil(jQuery('body', @document))
-      continue unless parent.scrollHeight > parent.clientHeight
-      jQuery(parent).on 'scroll', =>
-        @position() if @visible
-
-    jQuery(@document).on 'scroll', =>
-      @position() if @visible
 
 
   appear: ->
@@ -72,3 +67,4 @@ jQuery.extend Mercury.tooltip,
     @element.hide()
     @visible = false
 
+}

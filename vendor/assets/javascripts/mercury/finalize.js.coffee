@@ -1,3 +1,2 @@
-# tell everyone that Mercury has loaded
-Mercury.onload() if Mercury.onload
+# Tell everyone that Mercury has loaded.
 jQuery(window).trigger('mercury:loaded')

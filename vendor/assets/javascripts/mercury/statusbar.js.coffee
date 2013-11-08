@@ -16,11 +16,11 @@ class @Mercury.Statusbar
 
 
   bindEvents: ->
-    Mercury.on 'region:update', (event, options) =>
+    Mercury.bind 'region:update', (event, options) =>
       @setPath(options.region.path()) if options.region && jQuery.type(options.region.path) == 'function'
 
-    @aboutElement.on 'click', =>
-      Mercury.lightview('/mercury/lightviews/about.html', {title: "Mercury Editor v#{Mercury.version}"})
+    @aboutElement.click =>
+      Mercury.lightview('/mercury/lightviews/about.html', {title: "About Mercury Editor v#{Mercury.version}", closeButton: true})
 
 
   height: ->
@@ -37,7 +37,7 @@ class @Mercury.Statusbar
     path = []
     path.push("<a>#{element.tagName.toLowerCase()}</a>") for element in elements
 
-    @pathElement.html("<span><strong>#{Mercury.I18n('Path:')} </strong>#{path.reverse().join(' &raquo; ')}</span>")
+    @pathElement.html("<span><strong>Path: </strong>#{path.reverse().join(' &raquo; ')}</span>")
 
 
   show: ->

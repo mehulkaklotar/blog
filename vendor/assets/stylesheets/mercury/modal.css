@@ -31,9 +31,7 @@
   font: normal normal normal 12px/normal Helvetica, Tahoma, Arial, sans-serif;
 }
 .mercury-modal.loading .mercury-modal-content-container {
-  background-color: #EFEFEF;
-  background-repeat: no-repeat;
-  background-position: center;
+  background: #EFEFEF url(/assets/mercury/loading-light.gif) no-repeat center;
 }
 .mercury-modal h1.mercury-modal-title {
   -webkit-user-select: none;
@@ -95,15 +93,15 @@
   overflow: hidden;
   height: 0;
 }
-.mercury-modal .mercury-display-pane-container {
+.mercury-modal .mercury-modal-pane-container {
   overflow: auto;
   margin: -20px -20px 0;
   padding: 20px 20px 10px;
 }
-.mercury-modal .mercury-display-pane-container .mercury-display-pane {
+.mercury-modal .mercury-modal-pane-container .mercury-modal-pane {
   float: left;
 }
-.mercury-modal .mercury-display-controls {
+.mercury-modal .mercury-modal-controls {
   padding: 15px 0 0;
   border-top: 1px solid #CCC;
   text-align: right;
@@ -178,6 +176,4 @@
   float: left;
   margin-left: 10px;
 }
-#mercury_table #table_options .inputs:first-child label {
-  width: 36%
-}
+
