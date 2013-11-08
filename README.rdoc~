@@ -1,4 +1,31 @@
- <h1>Blog</h1>
+ Blog
 
-<p>Rails Blog simple application provides blog tasks such as create post and edit them. With the use of Mercury editor on page updation can occur.Post can have images that is uploaded to database server for mercury.
-</p>
+Rails Blog simple application provides blog tasks such as create post and edit them. With the use of Mercury editor on page updation can occur.Post can have images that is uploaded to database server for mercury.
+
+ Live demo URL 
+
+http://polar-island-3663.herokuapp.com
+
+ Setup Instruction
+
+Prerequisites : 
+
+    The Ruby language version 1.9.3 or newer
+    The RubyGems packaging system
+        To learn more about RubyGems, please read the RubyGems User Guide
+    A working installation of the SQLite3 Database
+    Rails installation
+ 
+Gemfile is already updated with the latest gems. 
+Go to the project directory and start the server by typing command 
+  $ rails s 
+
+And the application will be deployed on the server. you can see that in browser by navigating to this url : 
+  localhost:3000
+
+ Included Gems, Libraries
+
+gem 'bootstrap-sass','2.3.2.0': To use bootstrap css and style for the application
+gem 'sqlite3', '1.3.8' : For development purpose. to use database for the tables - posts , comments, images (Mercury editor)
+gem 'mercury-rails', git: 'https://github.com/jejacks0n/mercury.git', ref: 'a2b16bcdc9' : For mercury editor 
+gem 'pg', '0.15.1' : Postgre databse for production purpose in heroku
