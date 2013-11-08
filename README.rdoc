@@ -1,6 +1,6 @@
  Blog
 
-Rails Blog simple application provides blog tasks such as create post and edit them. With the use of Mercury editor on page updation can occur.Post can have images that is uploaded to database server for mercury.
+Rails Blog simple application provides blog tasks such as create post and edit them. With the use of Mercury editor, post can be updated. Post can have images that are uploaded to database server.
 
  Live demo URL 
 
